@@ -1,3 +1,10 @@
+resource "azurerm_public_ip" "agent" {
+  name                = "${var.agent_name}-pip"
+  resource_group_name = data.azurerm_resource_group.example.agent.name
+  location            = data.azurerm_resource_group.agent.location
+  allocation_method   = "Dynamic"
+}
+
 resource "azurerm_network_interface" "agent" {
   name                = "${var.agent_name}-nic"
   location            = data.azurerm_resource_group.agent.location
@@ -7,6 +14,7 @@ resource "azurerm_network_interface" "agent" {
     name                          = "internal"
     subnet_id                     = data.azurerm_subnet.agent.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.agent.id
   }
 }
 
