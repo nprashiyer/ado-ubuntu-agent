@@ -1,0 +1,29 @@
+name: Deploy Agent
+on: workflow_dispatch
+inputs:
+  agent_name:
+    type: string
+    default: agent-01
+  resource_group_name:
+    type: string
+  subnet_name:
+    type: string
+  vnet_name:
+    type: string
+  vnet_rg_name:
+    type: string
+
+jobs:
+  terraform:
+    runs-on: hashicorp/terraform:latest
+
+    steps:
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      run: terraform plan -var='agent_name={{ inputs.agent_name }}' -var='resource_group_name={{ inputs.resource_group_name }}' -var='subnet_name={{ inputs.subnet_name }}' -var='vnet_name={{ inputs.vnet_name }}' -var='vnet_rg_name={{ inputs.vnet_rg_name }}'
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -var='agent_name={{ inputs.agent_name }}' -var='resource_group_name={{ inputs.resource_group_name }}' -var='subnet_name={{ inputs.subnet_name }}' -var='vnet_name={{ inputs.vnet_name }}' -var='vnet_rg_name={{ inputs.vnet_rg_name }}'
+  
